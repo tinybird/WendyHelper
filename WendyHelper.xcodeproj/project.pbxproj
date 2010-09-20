@@ -8,14 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		15412E751247557400DEA353 /* ReportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E741247557400DEA353 /* ReportManager.m */; };
-		15412E78124755E900DEA353 /* AppManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E77124755E900DEA353 /* AppManager.m */; };
-		15412E83124755F700DEA353 /* Country.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E7A124755F700DEA353 /* Country.m */; };
-		15412E84124755F700DEA353 /* CurrencyManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E7C124755F700DEA353 /* CurrencyManager.m */; };
-		15412E85124755F700DEA353 /* Day.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E7E124755F700DEA353 /* Day.m */; };
-		15412E86124755F700DEA353 /* Entry.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E80124755F700DEA353 /* Entry.m */; };
 		15412E87124755F700DEA353 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E82124755F700DEA353 /* RegexKitLite.m */; };
-		15412E8A124755FE00DEA353 /* Review.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E89124755FE00DEA353 /* Review.m */; };
 		15412E921247563400DEA353 /* NSDictionary+HTTP.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E911247563400DEA353 /* NSDictionary+HTTP.m */; };
+		15412F1312475A9200DEA353 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 15412F1212475A9200DEA353 /* libz.dylib */; };
+		15412F3012475CD500DEA353 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 15412F2F12475CD500DEA353 /* libicucore.dylib */; };
 		8DD76F9A0486AA7600D96B5E /* WendyHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* WendyHelper.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -37,22 +33,12 @@
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		15412E731247557400DEA353 /* ReportManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportManager.h; sourceTree = "<group>"; };
 		15412E741247557400DEA353 /* ReportManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportManager.m; sourceTree = "<group>"; };
-		15412E76124755E900DEA353 /* AppManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppManager.h; sourceTree = "<group>"; };
-		15412E77124755E900DEA353 /* AppManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppManager.m; sourceTree = "<group>"; };
-		15412E79124755F700DEA353 /* Country.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Country.h; sourceTree = "<group>"; };
-		15412E7A124755F700DEA353 /* Country.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Country.m; sourceTree = "<group>"; };
-		15412E7B124755F700DEA353 /* CurrencyManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CurrencyManager.h; sourceTree = "<group>"; };
-		15412E7C124755F700DEA353 /* CurrencyManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CurrencyManager.m; sourceTree = "<group>"; };
-		15412E7D124755F700DEA353 /* Day.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Day.h; sourceTree = "<group>"; };
-		15412E7E124755F700DEA353 /* Day.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Day.m; sourceTree = "<group>"; };
-		15412E7F124755F700DEA353 /* Entry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Entry.h; sourceTree = "<group>"; };
-		15412E80124755F700DEA353 /* Entry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Entry.m; sourceTree = "<group>"; };
 		15412E81124755F700DEA353 /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
 		15412E82124755F700DEA353 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
-		15412E88124755FE00DEA353 /* Review.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Review.h; sourceTree = "<group>"; };
-		15412E89124755FE00DEA353 /* Review.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Review.m; sourceTree = "<group>"; };
 		15412E901247563400DEA353 /* NSDictionary+HTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+HTTP.h"; sourceTree = "<group>"; };
 		15412E911247563400DEA353 /* NSDictionary+HTTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+HTTP.m"; sourceTree = "<group>"; };
+		15412F1212475A9200DEA353 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		15412F2F12475CD500DEA353 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		32A70AAB03705E1F00C91783 /* WendyHelper_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WendyHelper_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* WendyHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WendyHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -63,6 +49,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
+				15412F1312475A9200DEA353 /* libz.dylib in Frameworks */,
+				15412F3012475CD500DEA353 /* libicucore.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,46 +60,52 @@
 		08FB7794FE84155DC02AAC07 /* WendyHelper */ = {
 			isa = PBXGroup;
 			children = (
-				08FB7795FE84155DC02AAC07 /* Source */,
+				08FB7795FE84155DC02AAC07 /* AppSales Code */,
+				15412F4912475D3C00DEA353 /* Classes */,
+				15412F4812475D2600DEA353 /* Other Source */,
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
 			name = WendyHelper;
 			sourceTree = "<group>";
 		};
-		08FB7795FE84155DC02AAC07 /* Source */ = {
+		08FB7795FE84155DC02AAC07 /* AppSales Code */ = {
 			isa = PBXGroup;
 			children = (
 				15412E901247563400DEA353 /* NSDictionary+HTTP.h */,
 				15412E911247563400DEA353 /* NSDictionary+HTTP.m */,
-				15412E88124755FE00DEA353 /* Review.h */,
-				15412E89124755FE00DEA353 /* Review.m */,
-				15412E79124755F700DEA353 /* Country.h */,
-				15412E7A124755F700DEA353 /* Country.m */,
-				15412E7B124755F700DEA353 /* CurrencyManager.h */,
-				15412E7C124755F700DEA353 /* CurrencyManager.m */,
-				15412E7D124755F700DEA353 /* Day.h */,
-				15412E7E124755F700DEA353 /* Day.m */,
-				15412E7F124755F700DEA353 /* Entry.h */,
-				15412E80124755F700DEA353 /* Entry.m */,
 				15412E81124755F700DEA353 /* RegexKitLite.h */,
 				15412E82124755F700DEA353 /* RegexKitLite.m */,
-				15412E76124755E900DEA353 /* AppManager.h */,
-				15412E77124755E900DEA353 /* AppManager.m */,
 				15412E731247557400DEA353 /* ReportManager.h */,
 				15412E741247557400DEA353 /* ReportManager.m */,
-				32A70AAB03705E1F00C91783 /* WendyHelper_Prefix.pch */,
-				08FB7796FE84155DC02AAC07 /* WendyHelper.m */,
 			);
-			name = Source;
+			name = "AppSales Code";
 			sourceTree = "<group>";
 		};
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
+				15412F1212475A9200DEA353 /* libz.dylib */,
+				15412F2F12475CD500DEA353 /* libicucore.dylib */,
 			);
 			name = "External Frameworks and Libraries";
+			sourceTree = "<group>";
+		};
+		15412F4812475D2600DEA353 /* Other Source */ = {
+			isa = PBXGroup;
+			children = (
+				32A70AAB03705E1F00C91783 /* WendyHelper_Prefix.pch */,
+				08FB7796FE84155DC02AAC07 /* WendyHelper.m */,
+			);
+			name = "Other Source";
+			sourceTree = "<group>";
+		};
+		15412F4912475D3C00DEA353 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Classes;
 			sourceTree = "<group>";
 		};
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
@@ -174,13 +168,7 @@
 			files = (
 				8DD76F9A0486AA7600D96B5E /* WendyHelper.m in Sources */,
 				15412E751247557400DEA353 /* ReportManager.m in Sources */,
-				15412E78124755E900DEA353 /* AppManager.m in Sources */,
-				15412E83124755F700DEA353 /* Country.m in Sources */,
-				15412E84124755F700DEA353 /* CurrencyManager.m in Sources */,
-				15412E85124755F700DEA353 /* Day.m in Sources */,
-				15412E86124755F700DEA353 /* Entry.m in Sources */,
 				15412E87124755F700DEA353 /* RegexKitLite.m in Sources */,
-				15412E8A124755FE00DEA353 /* Review.m in Sources */,
 				15412E921247563400DEA353 /* NSDictionary+HTTP.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -223,6 +211,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -236,6 +225,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;

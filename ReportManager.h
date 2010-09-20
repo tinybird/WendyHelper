@@ -8,41 +8,16 @@
 
 #import <Foundation/Foundation.h>
 
-#define ReportManagerDownloadedDailyReportsNotification				@"ReportManagerDownloadedDailyReportsNotification"
-#define ReportManagerDownloadedWeeklyReportsNotification			@"ReportManagerDownloadedWeeklyReportsNotification"
-#define ReportManagerUpdatedDownloadProgressNotification			@"ReportManagerUpdatedDownloadProgressNotification"
-
-@class Day;
 
 @interface ReportManager : NSObject {
 	NSMutableDictionary *days;
 	NSMutableDictionary *weeks;
-	
-	BOOL isRefreshing;
-	BOOL needsDataSavedToDisk;
-	NSString *reportDownloadStatus;
 }
 
-@property (readonly) NSDictionary *days;
-@property (readonly) NSDictionary *weeks;
-@property (readonly) NSString *reportDownloadStatus;
+@property(readonly) NSDictionary *days;
+@property(readonly) NSDictionary *weeks;
 
 + (ReportManager *)sharedManager;
-
-- (BOOL)loadReportCache;
-- (void)generateReportCache:(NSString *)reportCacheFile;
-
-- (BOOL)isDownloadingReports;
-- (void)downloadReports;
-
-- (void)deleteDay:(Day *)dayToDelete;
-
-- (void)saveData;
-- (NSString *)originalReportsPath;
-- (NSString *)reportCachePath;
-
-- (void)importReport:(Day *)report;
-- (void)deleteDay:(Day *)dayToDelete;
-
+- (void)downloadReportsWithUsername:(NSString *)username password:(NSString *)password;
 
 @end
