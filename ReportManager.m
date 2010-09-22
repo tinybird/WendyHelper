@@ -6,32 +6,59 @@
 //  Copyright 2009 omz:software. All rights reserved.
 //
 
+#include <sqlite3.h>
 #import "ReportManager.h"
 #import "NSDictionary+HTTP.h"
 #import "RegexKitLite.h"
 
 
-static NSString *getDocPath(void)
-{
-	static NSString *documentsDirectory = nil;
-	if (!documentsDirectory) {
-		NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-		documentsDirectory = [[paths objectAtIndex:0] retain];
-	}
-	return documentsDirectory;
-}
-
 @implementation ReportManager
 
-@synthesize days, weeks;
+@synthesize days, weeks, basePath;
 
-+ (ReportManager *)sharedManager
+- (NSString *)documentsPath
 {
-	static ReportManager *sharedManager = nil;
-	if (sharedManager == nil) {
-		sharedManager = [ReportManager new];
-	}
-	return sharedManager;
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    return [[paths objectAtIndex:0] stringByAppendingPathComponent:@"WendyHelper"];
+}
+
+static int callback(void *daysPtr, int argc, char **argv, char **azColName)
+{
+    NSMutableDictionary *days = daysPtr;
+
+    NSDateFormatter *inFormatter = [[NSDateFormatter alloc] init];
+    [inFormatter setDateFormat:@"yyyy-MM-dd"];
+    
+    NSDateFormatter *outFormatter = [[NSDateFormatter alloc] init];
+    [outFormatter setDateFormat:@"MM/dd/yyyy"];
+
+    for (int i = 0; i < argc; i++) {
+        NSDate *date = [inFormatter dateFromString:[NSString stringWithUTF8String:argv[i]]];
+        NSString *string = [outFormatter stringFromDate:date];
+        [days setValue:@"foo" forKey:string];
+    }
+    
+    [inFormatter release];
+    [outFormatter release];
+
+    return 0;
+}
+
+- (void)readDays
+{
+    // Fill in days with the already downloaded days.
+    sqlite3 *db;
+    if (sqlite3_open([[basePath stringByAppendingPathComponent:@"sales.sqlite"] UTF8String], &db) != SQLITE_OK) {
+        NSLog(@"Can't open database: %s", sqlite3_errmsg(db));
+        sqlite3_close(db);
+        abort();
+    }
+
+    char *zErrMsg = NULL;
+    if (sqlite3_exec(db, [@"SELECT DISTINCT date FROM sales" UTF8String], callback, days, &zErrMsg) != SQLITE_OK) {
+        NSLog(@"SQL error: %s", zErrMsg);
+    }
+    sqlite3_close(db);
 }
 
 - (id)init
@@ -40,8 +67,8 @@ static NSString *getDocPath(void)
 	if (self) {
 		days = [NSMutableDictionary new];
 		weeks = [NSMutableDictionary new];
+        basePath = [[self documentsPath] copy];
 	}
-	
 	return self;
 }
 
@@ -49,6 +76,7 @@ static NSString *getDocPath(void)
 {
 	[days release];
 	[weeks release];
+    [basePath release];
 	
 	[super dealloc];
 }
@@ -60,10 +88,10 @@ static NSString *getDocPath(void)
 
 - (NSString *)originalReportsPath
 {
-	NSString *path = [getDocPath() stringByAppendingPathComponent:@"OriginalReports"];
+	NSString *path = [basePath stringByAppendingPathComponent:@"OriginalReports"];
 	if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
 		NSError *error;
-		if (! [[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error]) {
+		if (![[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error]) {
 			[NSException raise:NSGenericException format:@"%@", error];
 		}
 	}
@@ -78,7 +106,9 @@ static NSString *getDocPath(void)
 		NSLog(@"Missing username/password");
 		return;
 	}
-	
+
+    [self readDays];
+
 	NSArray *daysToSkip = [days allKeys];
 	NSArray *weeksToSkip = [weeks allKeys];
 	NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -93,7 +123,8 @@ static NSString *getDocPath(void)
 
 #define ITTS_SALES_PAGE_URL @"https://reportingitc.apple.com/sales.faces"
 
-static NSMutableArray* extractFormOptions(NSString *htmlPage, NSString *formID) {
+static NSMutableArray *extractFormOptions(NSString *htmlPage, NSString *formID)
+{
     NSScanner *scanner = [NSScanner scannerWithString:htmlPage];
     NSString *selectionForm = nil;
     [scanner scanUpToString:formID intoString:nil];
@@ -119,7 +150,8 @@ static NSMutableArray* extractFormOptions(NSString *htmlPage, NSString *formID) 
     return options;
 }
 
-static NSData* getPostRequestAsData(NSString *urlString, NSDictionary *postDict, NSHTTPURLResponse **downloadResponse) {
+static NSData *getPostRequestAsData(NSString *urlString, NSDictionary *postDict, NSHTTPURLResponse **downloadResponse)
+{
     NSString *postDictString = [postDict formatForHTTP];
     NSData *httpBody = [postDictString dataUsingEncoding:NSASCIIStringEncoding];
     NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
@@ -128,11 +160,13 @@ static NSData* getPostRequestAsData(NSString *urlString, NSDictionary *postDict,
     return [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:downloadResponse error:NULL];
 }
 
-static NSString* getPostRequestAsString(NSString *urlString, NSDictionary *postDict) {
+static NSString *getPostRequestAsString(NSString *urlString, NSDictionary *postDict)
+{
     return [[[NSString alloc] initWithData:getPostRequestAsData(urlString, postDict, nil) encoding:NSUTF8StringEncoding] autorelease];
 }
 
-static NSString* parseViewState(NSString *htmlPage) {
+static NSString *parseViewState(NSString *htmlPage)
+{
     return [htmlPage stringByMatching:@"\"javax.faces.ViewState\" value=\"(.*?)\"" capture:1];
 }
 
@@ -188,23 +222,9 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
 {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
     [self performSelectorOnMainThread:@selector(setProgress:) withObject:@"Starting Download..." waitUntilDone:NO];
-    
-	NSArray *daysToSkipDates = [userInfo objectForKey:@"daysToSkip"];
-	NSArray *weeksToSkipDates = [userInfo objectForKey:@"weeksToSkip"];
-	NSMutableArray *daysToSkip = [NSMutableArray array];
-	NSMutableArray *weeksToSkip = [NSMutableArray array];
-	NSDateFormatter *nameFormatter = [[[NSDateFormatter alloc] init] autorelease];
-	[nameFormatter setDateFormat:@"MM/dd/yyyy"];
-	for (NSDate *date in daysToSkipDates) {
-		NSString *dayName = [nameFormatter stringFromDate:date];
-		[daysToSkip addObject:dayName];
-	}
-	for (NSDate *date in weeksToSkipDates) {
-		NSDate *toDate = [[[NSDate alloc] initWithTimeInterval:60*60*24*6.5 sinceDate:date] autorelease];
-		NSString *weekName = [nameFormatter stringFromDate:toDate];
-		[weeksToSkip addObject:weekName];
-	}
-	
+
+	NSArray *daysToSkip = [userInfo objectForKey:@"daysToSkip"];
+
 	NSString *originalReportsPath = [userInfo objectForKey:@"originalReportsPath"];
 	NSString *username = [userInfo objectForKey:@"username"];
 	NSString *password = [userInfo objectForKey:@"password"];
@@ -272,7 +292,9 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         [pool release];
         return;
     }
+    NSLog(@"Available days: %d", [availableDays count]);
     [availableDays removeObjectsInArray:daysToSkip];
+    NSLog(@"Days to get: %d", [availableDays count]);
     
     // parse weeks available
     NSMutableArray *availableWeeks = extractFormOptions(salesPage, @"theForm:weekPickerSourceSelectElement");
@@ -283,7 +305,6 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         return;
     }
     NSString *arbitraryWeek = [availableWeeks objectAtIndex:0];
-    [availableWeeks removeObjectsInArray:weeksToSkip];
     
     // click though from the dashboard to the sales page
     NSDictionary *postDict = [NSDictionary dictionaryWithObjectsAndKeys:

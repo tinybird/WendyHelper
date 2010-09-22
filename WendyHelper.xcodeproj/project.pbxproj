@@ -12,6 +12,7 @@
 		15412E921247563400DEA353 /* NSDictionary+HTTP.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E911247563400DEA353 /* NSDictionary+HTTP.m */; };
 		15412F1312475A9200DEA353 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 15412F1212475A9200DEA353 /* libz.dylib */; };
 		15412F3012475CD500DEA353 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 15412F2F12475CD500DEA353 /* libicucore.dylib */; };
+		154130B2124A2FCC00DEA353 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 154130B1124A2FCC00DEA353 /* libsqlite3.dylib */; };
 		8DD76F9A0486AA7600D96B5E /* WendyHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* WendyHelper.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 		15412E911247563400DEA353 /* NSDictionary+HTTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+HTTP.m"; sourceTree = "<group>"; };
 		15412F1212475A9200DEA353 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		15412F2F12475CD500DEA353 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		154130B1124A2FCC00DEA353 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		32A70AAB03705E1F00C91783 /* WendyHelper_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WendyHelper_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* WendyHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WendyHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -51,6 +53,7 @@
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
 				15412F1312475A9200DEA353 /* libz.dylib in Frameworks */,
 				15412F3012475CD500DEA353 /* libicucore.dylib in Frameworks */,
+				154130B2124A2FCC00DEA353 /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,6 +91,7 @@
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 				15412F1212475A9200DEA353 /* libz.dylib */,
 				15412F2F12475CD500DEA353 /* libicucore.dylib */,
+				154130B1124A2FCC00DEA353 /* libsqlite3.dylib */,
 			);
 			name = "External Frameworks and Libraries";
 			sourceTree = "<group>";

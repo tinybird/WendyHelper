@@ -12,12 +12,13 @@
 @interface ReportManager : NSObject {
 	NSMutableDictionary *days;
 	NSMutableDictionary *weeks;
+    NSString *basePath;
 }
 
 @property(readonly) NSDictionary *days;
 @property(readonly) NSDictionary *weeks;
+@property(copy) NSString *basePath;
 
-+ (ReportManager *)sharedManager;
 - (void)downloadReportsWithUsername:(NSString *)username password:(NSString *)password;
 
 @end
