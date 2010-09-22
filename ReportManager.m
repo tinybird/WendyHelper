@@ -49,14 +49,14 @@ static int callback(void *daysPtr, int argc, char **argv, char **azColName)
     // Fill in days with the already downloaded days.
     sqlite3 *db;
     if (sqlite3_open([[basePath stringByAppendingPathComponent:@"sales.sqlite"] UTF8String], &db) != SQLITE_OK) {
-        NSLog(@"Can't open database: %s", sqlite3_errmsg(db));
+        fprintf(stderr, "Can't open database: %s", sqlite3_errmsg(db));
         sqlite3_close(db);
         abort();
     }
 
     char *zErrMsg = NULL;
     if (sqlite3_exec(db, [@"SELECT DISTINCT date FROM sales" UTF8String], callback, days, &zErrMsg) != SQLITE_OK) {
-        NSLog(@"SQL error: %s", zErrMsg);
+        fprintf(stderr, "SQL error: %s", zErrMsg);
     }
     sqlite3_close(db);
 }
@@ -83,7 +83,7 @@ static int callback(void *daysPtr, int argc, char **argv, char **azColName)
 
 - (void)setProgress:(NSString *)status
 {
-    NSLog(@"Status: %@", status);
+    fprintf(stdout, "Status: %s\n", [status UTF8String]);
 }
 
 - (NSString *)originalReportsPath
@@ -103,7 +103,7 @@ static int callback(void *daysPtr, int argc, char **argv, char **azColName)
 - (void)downloadReportsWithUsername:(NSString *)username password:(NSString *)password
 {
 	if ([username length] == 0 || [password length] == 0) {
-		NSLog(@"Missing username/password");
+		fprintf(stderr, "Missing username/password");
 		return;
 	}
 
@@ -212,7 +212,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         return YES;
     } else {
         responseString = [[[NSString alloc] initWithData:requestResponseData encoding:NSUTF8StringEncoding] autorelease];
-        NSLog(@"unexpected response: %@", responseString);
+        fprintf(stderr, "unexpected response: %s", [responseString UTF8String]);
         *error = YES;
         return NO;
     }   
@@ -270,7 +270,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
     NSString *salesRedirectPage = [NSString stringWithContentsOfURL:[NSURL URLWithString:[ittsBaseURL stringByAppendingString:salesAction]]
                                                        usedEncoding:NULL error:&error];
     if (error) {
-        NSLog(@"unexpected error: %@", salesRedirectPage);
+        fprintf(stderr, "unexpected error: %s\n", [salesRedirectPage UTF8String]);
         [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"could not load iTunes Connect sales/trend page" waitUntilDone:NO];
         [pool release];
         return;
@@ -287,19 +287,17 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
     // parse days available
     NSMutableArray *availableDays = extractFormOptions(salesPage, @"theForm:datePickerSourceSelectElement");
     if (availableDays == nil) {
-        NSLog(@"cannot find selection form: %@", salesPage);
+        fprintf(stderr, "cannot find selection form: %s\n", [salesPage UTF8String]);
         [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"unexpected date selector html form" waitUntilDone:NO];
         [pool release];
         return;
     }
-    NSLog(@"Available days: %d", [availableDays count]);
     [availableDays removeObjectsInArray:daysToSkip];
-    NSLog(@"Days to get: %d", [availableDays count]);
     
     // parse weeks available
     NSMutableArray *availableWeeks = extractFormOptions(salesPage, @"theForm:weekPickerSourceSelectElement");
     if (availableWeeks == nil) {
-        NSLog(@"cannot find selection form: %@", salesPage);
+        fprintf(stderr, "cannot find selection form: %s\n", [salesPage UTF8String]);
         [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"unexpected week selector html form" waitUntilDone:NO];
         [pool release];
         return;
@@ -346,22 +344,24 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
 
 - (void) finishFetchingReports
 {
-    NSLog(@"Finished downloading");
+    fprintf(stdout, "Finished downloading\n");
+    exit(0);
 }
 
 - (void)downloadFailed:(NSString *)error
 {
     NSAssert([NSThread isMainThread], nil);
-	NSString *message = @"Sorry, an error occured when trying to download the report files. Please check your username, password and internet connection.";
+	NSString *message = @"check your username, password and internet connection.";
 	if (error) {
-		message = [message stringByAppendingFormat:@"\n%@", error];
+		message = error;
 	}
-    NSLog(@"Download failed: %@", message);
+    fprintf(stderr, "Download failed: %s\n", [message UTF8String]);
+    exit(1);
 }
 
 - (void)successfullyDownloadedDay:(NSString *)day
 {
-    NSLog(@"Downloaded day: %@", day);
+    fprintf(stdout, "Downloaded day: %s\n", [day UTF8String]);
 }
 
 @end

@@ -44,7 +44,7 @@ int main(int argc, const char *argv[])
     }
 
     if (path == nil || username == nil || password == nil) {
-        NSLog(@"Missing path, username or password");
+        fprintf(stderr, "Usage: %s -d <path to sales database> -u <username> -p <password>\n", argv[0]);
         return 1;
     }
     
@@ -53,16 +53,7 @@ int main(int argc, const char *argv[])
 
     [reportManager downloadReportsWithUsername:username password:password];
 
-    while (1) {
-        // Start the run loop but return after each source is handled.
-        SInt32 result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 10, YES);
-
-        // If a source explicitly stopped the run loop, or if there are no
-        // sources or timers, go ahead and exit.
-        if (result == kCFRunLoopRunStopped || result == kCFRunLoopRunFinished) {
-            break;
-        }
-    }
+    [[NSRunLoop mainRunLoop] run];
 
     [reportManager release];
     
