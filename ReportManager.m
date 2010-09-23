@@ -51,7 +51,7 @@ static int callback(void *daysPtr, int argc, char **argv, char **azColName)
     if (sqlite3_open([[basePath stringByAppendingPathComponent:@"sales.sqlite"] UTF8String], &db) != SQLITE_OK) {
         fprintf(stderr, "Can't open database: %s", sqlite3_errmsg(db));
         sqlite3_close(db);
-        abort();
+        exit(1);
     }
 
     char *zErrMsg = NULL;

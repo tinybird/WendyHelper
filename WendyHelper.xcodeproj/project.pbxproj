@@ -10,7 +10,6 @@
 		15412E751247557400DEA353 /* ReportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E741247557400DEA353 /* ReportManager.m */; };
 		15412E87124755F700DEA353 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E82124755F700DEA353 /* RegexKitLite.m */; };
 		15412E921247563400DEA353 /* NSDictionary+HTTP.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E911247563400DEA353 /* NSDictionary+HTTP.m */; };
-		15412F1312475A9200DEA353 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 15412F1212475A9200DEA353 /* libz.dylib */; };
 		15412F3012475CD500DEA353 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 15412F2F12475CD500DEA353 /* libicucore.dylib */; };
 		154130B2124A2FCC00DEA353 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 154130B1124A2FCC00DEA353 /* libsqlite3.dylib */; };
 		8DD76F9A0486AA7600D96B5E /* WendyHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* WendyHelper.m */; settings = {ATTRIBUTES = (); }; };
@@ -38,7 +37,6 @@
 		15412E82124755F700DEA353 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
 		15412E901247563400DEA353 /* NSDictionary+HTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+HTTP.h"; sourceTree = "<group>"; };
 		15412E911247563400DEA353 /* NSDictionary+HTTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+HTTP.m"; sourceTree = "<group>"; };
-		15412F1212475A9200DEA353 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		15412F2F12475CD500DEA353 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		154130B1124A2FCC00DEA353 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		32A70AAB03705E1F00C91783 /* WendyHelper_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WendyHelper_Prefix.pch; sourceTree = "<group>"; };
@@ -51,7 +49,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
-				15412F1312475A9200DEA353 /* libz.dylib in Frameworks */,
 				15412F3012475CD500DEA353 /* libicucore.dylib in Frameworks */,
 				154130B2124A2FCC00DEA353 /* libsqlite3.dylib in Frameworks */,
 			);
@@ -89,7 +86,6 @@
 			isa = PBXGroup;
 			children = (
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
-				15412F1212475A9200DEA353 /* libz.dylib */,
 				15412F2F12475CD500DEA353 /* libicucore.dylib */,
 				154130B1124A2FCC00DEA353 /* libsqlite3.dylib */,
 			);
