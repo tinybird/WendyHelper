@@ -49,14 +49,14 @@ static int callback(void *daysPtr, int argc, char **argv, char **azColName)
     // Fill in days with the already downloaded days.
     sqlite3 *db;
     if (sqlite3_open([[basePath stringByAppendingPathComponent:@"sales.sqlite"] UTF8String], &db) != SQLITE_OK) {
-        fprintf(stderr, "Can't open database: %s", sqlite3_errmsg(db));
+        fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         sqlite3_close(db);
         exit(1);
     }
 
     char *zErrMsg = NULL;
     if (sqlite3_exec(db, [@"SELECT DISTINCT date FROM sales" UTF8String], callback, days, &zErrMsg) != SQLITE_OK) {
-        fprintf(stderr, "SQL error: %s", zErrMsg);
+        fprintf(stderr, "SQL error: %s\n", zErrMsg);
     }
     sqlite3_close(db);
 }
@@ -221,9 +221,28 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
 - (void)fetchReportsWithUserInfo:(NSDictionary *)userInfo
 {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
-    [self performSelectorOnMainThread:@selector(setProgress:) withObject:@"Starting Download..." waitUntilDone:NO];
+    [self performSelectorOnMainThread:@selector(setProgress:) withObject:NSLocalizedString(@"Starting Download...",nil) waitUntilDone:NO];
+ 
+    NSArray *daysToSkip = [userInfo objectForKey:@"daysToSkip"];
+    
+#if 0
+	NSArray *daysToSkipDates = [userInfo objectForKey:@"daysToSkip"];
+	NSArray *weeksToSkipDates = [userInfo objectForKey:@"weeksToSkip"];
+	NSMutableArray *daysToSkip = [NSMutableArray array];
 
-	NSArray *daysToSkip = [userInfo objectForKey:@"daysToSkip"];
+	NSMutableArray *weeksToSkip = [NSMutableArray array];
+	NSDateFormatter *nameFormatter = [[[NSDateFormatter alloc] init] autorelease];
+	[nameFormatter setDateFormat:@"MM/dd/yyyy"];
+	for (NSDate *date in daysToSkipDates) {
+		NSString *dayName = [nameFormatter stringFromDate:date];
+		[daysToSkip addObject:dayName];
+	}
+	for (NSDate *date in weeksToSkipDates) {
+		NSDate *toDate = [[[NSDate alloc] initWithTimeInterval:60*60*24*6.5 sinceDate:date] autorelease];
+		NSString *weekName = [nameFormatter stringFromDate:toDate];
+		[weeksToSkip addObject:weekName];
+	}
+#endif
 
 	NSString *originalReportsPath = [userInfo objectForKey:@"originalReportsPath"];
 	NSString *username = [userInfo objectForKey:@"username"];
@@ -263,46 +282,71 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         }
     } // else, already logged in
     
-    // load sales/trends page
-    // if already logged in, sometimes this loads a vendor selection page?  Downloding still works if we ignore this and march onward...
-    NSString *salesAction = @"/WebObjects/iTunesConnect.woa/wo/2.0.9.7.2.9.1.0.0.3";
+    NSString *salesAction = [loginPage stringByMatching:@"/WebObjects/iTunesConnect.woa/wo/[0-9]\\.0\\.9\\.7\\.2\\.9\\.1\\.0\\.0\\.[0-9]"];
+    if (salesAction.length == 0) {
+        [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"could parse sales/trend action" waitUntilDone:NO];
+        [pool release];
+        return;
+    }
+    
+    // load sales/trends page.
     NSError *error = nil;
     NSString *salesRedirectPage = [NSString stringWithContentsOfURL:[NSURL URLWithString:[ittsBaseURL stringByAppendingString:salesAction]]
                                                        usedEncoding:NULL error:&error];
     if (error) {
-        fprintf(stderr, "unexpected error: %s\n", [salesRedirectPage UTF8String]);
+        NSLog(@"unexpected error: %@", salesRedirectPage);
         [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"could not load iTunes Connect sales/trend page" waitUntilDone:NO];
         [pool release];
         return;
     }
-    	
+    
     // get the form field names needed to download the report
     NSString *salesPage = [NSString stringWithContentsOfURL:[NSURL URLWithString:ITTS_SALES_PAGE_URL] usedEncoding:NULL error:NULL];
-    NSString *viewState = parseViewState(salesPage);
+    if (salesPage.length == 0) {
+        NSLog(@"cannot load sales page: %@", salesPage);
+        [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"could not load sales/trends page" waitUntilDone:NO];
+        [pool release];
+        return;
+    }
     
+    NSString *viewState = parseViewState(salesPage);    
     NSString *dailyName = [salesPage stringByMatching:@"theForm:j_id_jsp_[0-9]*_21"];
+#if 0
+    NSString *weeklyName = [dailyName stringByReplacingOccurrencesOfString:@"_21" withString:@"_22"];
+#endif
     NSString *ajaxName = [dailyName stringByReplacingOccurrencesOfString:@"_21" withString:@"_2"];
     NSString *daySelectName = [dailyName stringByReplacingOccurrencesOfString:@"_21" withString:@"_30"];
+#if 0
+    NSString *weekSelectName = [dailyName stringByReplacingOccurrencesOfString:@"_21" withString:@"_35"];
+#endif
     
     // parse days available
     NSMutableArray *availableDays = extractFormOptions(salesPage, @"theForm:datePickerSourceSelectElement");
     if (availableDays == nil) {
-        fprintf(stderr, "cannot find selection form: %s\n", [salesPage UTF8String]);
+        NSLog(@"cannot find selection form: %@", salesPage);
         [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"unexpected date selector html form" waitUntilDone:NO];
         [pool release];
         return;
     }
+#if 0
+    NSString *arbitraryDay = [availableDays objectAtIndex:0];
+#endif
     [availableDays removeObjectsInArray:daysToSkip];
+    [availableDays sortUsingSelector:@selector(compare:)]; // download older reports first
     
     // parse weeks available
     NSMutableArray *availableWeeks = extractFormOptions(salesPage, @"theForm:weekPickerSourceSelectElement");
     if (availableWeeks == nil) {
-        fprintf(stderr, "cannot find selection form: %s\n", [salesPage UTF8String]);
+        NSLog(@"cannot find selection form: %@", salesPage);
         [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"unexpected week selector html form" waitUntilDone:NO];
         [pool release];
         return;
     }
     NSString *arbitraryWeek = [availableWeeks objectAtIndex:0];
+#if 0
+    [availableWeeks removeObjectsInArray:weeksToSkip];
+    [availableWeeks sortUsingSelector:@selector(compare:)];
+#endif    
     
     // click though from the dashboard to the sales page
     NSDictionary *postDict = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -319,14 +363,14 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
     // download daily reports
     int count = 1;
     for (NSString *dayString in availableDays) {
-        NSString *progressMessage = [NSString stringWithFormat:@"Downloading day %d of %d", count, availableDays.count];
+        NSString *progressMessage = [NSString stringWithFormat:NSLocalizedString(@"Downloading day %d of %d",nil), count, availableDays.count];
         count++;
         [self performSelectorOnMainThread:@selector(setProgress:) withObject:progressMessage waitUntilDone:NO];
         BOOL error = false;
-        if (downloadReport(originalReportsPath, ajaxName, dayString, arbitraryWeek, daySelectName, &viewState, &error)) {
+        BOOL day = downloadReport(originalReportsPath, ajaxName, dayString, arbitraryWeek, daySelectName, &viewState, &error);
+        if (day) {
             [self performSelectorOnMainThread:@selector(successfullyDownloadedDay:) withObject:dayString waitUntilDone:NO];            
-        }
-        else if (error) {
+        } else if (error) {
             NSString *message = [@"could not download " stringByAppendingString:dayString];
             [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:message waitUntilDone:NO];
             [pool release];
@@ -334,9 +378,47 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         }
     }
     
-	if ([availableDays count] == 0) {
+#if 0
+    // change to weeks instead of days
+    if (false) { // this currently does not appear to be needed
+        postDict = [NSDictionary dictionaryWithObjectsAndKeys:
+                    ajaxName, @"AJAXREQUEST",
+                    @"theForm", @"theForm",
+                    @"notnormal", @"theForm:xyz",
+                    @"Y", @"theForm:vendorType",
+                    viewState, @"javax.faces.ViewState",
+                    weeklyName, weeklyName,
+                    nil];
+        responseString = getPostRequestAsString(ITTS_SALES_PAGE_URL, postDict);
+        viewState = parseViewState(responseString);
+    }
+    
+    // download weekly reports
+    count = 1;
+    for (NSString *weekString in availableWeeks) {
+        NSString *progressMessage = [NSString stringWithFormat:NSLocalizedString(@"Downloading week %d of %d",nil), count, availableWeeks.count];
+        count++;
+        [self performSelectorOnMainThread:@selector(setProgress:) withObject:progressMessage waitUntilDone:NO];
+        BOOL error = false;
+        Day *week = downloadReport(originalReportsPath, ajaxName, arbitraryDay, weekString, weekSelectName, &viewState, &error);
+        if (week) {
+            [self performSelectorOnMainThread:@selector(successfullyDownloadedWeek:) withObject:week waitUntilDone:NO];   
+        } else if (error) {
+            NSString *message = [@"could not download " stringByAppendingString:weekString];
+            [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:message waitUntilDone:NO];
+            [pool release];
+            return;
+        }
+    }
+#endif
+    
+	if (availableDays.count == 0/* && availableWeeks.count == 0*/) {
 		[self performSelectorOnMainThread:@selector(setProgress:) withObject:NSLocalizedString(@"No new reports found",nil) waitUntilDone:NO];
-	}
+	} else {
+		[self performSelectorOnMainThread:@selector(setProgress:) withObject:@"" waitUntilDone:NO];
+		//[self performSelectorOnMainThread:@selector(saveData) withObject:nil waitUntilDone:NO];
+
+	} 
     
 	[self performSelectorOnMainThread:@selector(finishFetchingReports) withObject:nil waitUntilDone:NO];
 	[pool release];
