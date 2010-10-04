@@ -121,6 +121,7 @@ static int callback(void *daysPtr, int argc, char **argv, char **azColName)
 	[self performSelectorInBackground:@selector(fetchReportsWithUserInfo:) withObject:userInfo];
 }
 
+#define ITTS_VENDOR_DEFAULT_URL @"https://reportingitc.apple.com/vendor_default.faces"
 #define ITTS_SALES_PAGE_URL @"https://reportingitc.apple.com/sales.faces"
 
 static NSMutableArray *extractFormOptions(NSString *htmlPage, NSString *formID)
@@ -221,6 +222,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
 - (void)fetchReportsWithUserInfo:(NSDictionary *)userInfo
 {
 	NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    NSScanner *scanner;
     [self performSelectorOnMainThread:@selector(setProgress:) withObject:NSLocalizedString(@"Starting Download...",nil) waitUntilDone:NO];
  
     NSArray *daysToSkip = [userInfo objectForKey:@"daysToSkip"];
@@ -258,7 +260,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         [self performSelectorOnMainThread:@selector(setProgress:) withObject:NSLocalizedString(@"Logging in...",nil) waitUntilDone:NO];
         
         // find the login action
-        NSScanner *scanner = [NSScanner scannerWithString:loginPage];
+        scanner = [NSScanner scannerWithString:loginPage];
         [scanner scanUpToString:@"action=\"" intoString:nil];
         if (! [scanner scanString:@"action=\"" intoString:nil]) {
             [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"could not parse iTunes Connect login page" waitUntilDone:NO];
@@ -300,6 +302,27 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         return;
     }
     
+    scanner = [NSScanner scannerWithString:salesRedirectPage];
+    NSString *viewState = parseViewState(salesRedirectPage);
+    //[scanner scanUpToString:@"script id=\"defaultVendorPage:" intoString:nil];
+    [scanner scanUpToString:@"script id=\"defaultVendorPage:" intoString:nil];
+    if (! [scanner scanString:@"script id=\"defaultVendorPage:" intoString:nil]) {
+        [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"could not parse sales redirect page" waitUntilDone:NO];
+        [pool release];
+        return;
+    }
+    NSString *defaultVendorPage = nil;
+    [scanner scanUpToString:@"\"" intoString:&defaultVendorPage];
+
+    // click though from the dashboard to the sales page
+    NSDictionary *reportPostData = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [defaultVendorPage stringByReplacingOccurrencesOfString:@"_2" withString:@"_0"], @"AJAXREQUEST",
+                                    viewState, @"javax.faces.ViewState",
+                                    defaultVendorPage, @"defaultVendorPage",
+                                    [@"defaultVendorPage:" stringByAppendingString:defaultVendorPage],[@"defaultVendorPage:" stringByAppendingString:defaultVendorPage],
+                                    nil];
+    NSString *reportResponse = getPostRequestAsString(ITTS_VENDOR_DEFAULT_URL, reportPostData);
+    
     // get the form field names needed to download the report
     NSString *salesPage = [NSString stringWithContentsOfURL:[NSURL URLWithString:ITTS_SALES_PAGE_URL] usedEncoding:NULL error:NULL];
     if (salesPage.length == 0) {
@@ -308,17 +331,13 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         [pool release];
         return;
     }
-    
-    NSString *viewState = parseViewState(salesPage);    
-    NSString *dailyName = [salesPage stringByMatching:@"theForm:j_id_jsp_[0-9]*_21"];
-#if 0
-    NSString *weeklyName = [dailyName stringByReplacingOccurrencesOfString:@"_21" withString:@"_22"];
-#endif
-    NSString *ajaxName = [dailyName stringByReplacingOccurrencesOfString:@"_21" withString:@"_2"];
-    NSString *daySelectName = [dailyName stringByReplacingOccurrencesOfString:@"_21" withString:@"_30"];
-#if 0
-    NSString *weekSelectName = [dailyName stringByReplacingOccurrencesOfString:@"_21" withString:@"_35"];
-#endif
+
+    viewState = parseViewState(salesPage);    
+    NSString *dailyName = [salesPage stringByMatching:@"theForm:j_id_jsp_[0-9]*_6"];
+    NSString *weeklyName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_22"];
+    NSString *ajaxName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_2"];
+    NSString *daySelectName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_32"];
+    NSString *weekSelectName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_35"];
     
     // parse days available
     NSMutableArray *availableDays = extractFormOptions(salesPage, @"theForm:datePickerSourceSelectElement");
