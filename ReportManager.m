@@ -283,17 +283,12 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
             return;
         }
     } // else, already logged in
-    
-    NSString *salesAction = [loginPage stringByMatching:@"/WebObjects/iTunesConnect.woa/wo/[0-9]\\.0\\.9\\.7\\.2\\.9\\.1\\.0\\.0\\.[0-9]"];
-    if (salesAction.length == 0) {
-        [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"could parse sales/trend action" waitUntilDone:NO];
-        [pool release];
-        return;
-    }
-    
+
     // load sales/trends page.
     NSError *error = nil;
-    NSString *salesRedirectPage = [NSString stringWithContentsOfURL:[NSURL URLWithString:[ittsBaseURL stringByAppendingString:salesAction]]
+    
+    NSString *salesAction = @"https://reportingitc.apple.com";
+    NSString *salesRedirectPage = [NSString stringWithContentsOfURL:[NSURL URLWithString:salesAction]
                                                        usedEncoding:NULL error:&error];
     if (error) {
         NSLog(@"unexpected error: %@", salesRedirectPage);
@@ -304,7 +299,6 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
     
     scanner = [NSScanner scannerWithString:salesRedirectPage];
     NSString *viewState = parseViewState(salesRedirectPage);
-    //[scanner scanUpToString:@"script id=\"defaultVendorPage:" intoString:nil];
     [scanner scanUpToString:@"script id=\"defaultVendorPage:" intoString:nil];
     if (! [scanner scanString:@"script id=\"defaultVendorPage:" intoString:nil]) {
         [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:@"could not parse sales redirect page" waitUntilDone:NO];
@@ -321,7 +315,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
                                     defaultVendorPage, @"defaultVendorPage",
                                     [@"defaultVendorPage:" stringByAppendingString:defaultVendorPage],[@"defaultVendorPage:" stringByAppendingString:defaultVendorPage],
                                     nil];
-    NSString *reportResponse = getPostRequestAsString(ITTS_VENDOR_DEFAULT_URL, reportPostData);
+    getPostRequestAsString(ITTS_VENDOR_DEFAULT_URL, reportPostData);
     
     // get the form field names needed to download the report
     NSString *salesPage = [NSString stringWithContentsOfURL:[NSURL URLWithString:ITTS_SALES_PAGE_URL] usedEncoding:NULL error:NULL];
@@ -334,10 +328,10 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
 
     viewState = parseViewState(salesPage);    
     NSString *dailyName = [salesPage stringByMatching:@"theForm:j_id_jsp_[0-9]*_6"];
-    NSString *weeklyName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_22"];
+    //NSString *weeklyName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_22"];
     NSString *ajaxName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_2"];
     NSString *daySelectName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_32"];
-    NSString *weekSelectName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_37"];
+    //NSString *weekSelectName = [dailyName stringByReplacingOccurrencesOfString:@"_6" withString:@"_37"];
     
     // parse days available
     NSMutableArray *availableDays = extractFormOptions(salesPage, @"theForm:datePickerSourceSelectElement");
@@ -388,7 +382,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         BOOL error = false;
         BOOL day = downloadReport(originalReportsPath, ajaxName, dayString, arbitraryWeek, daySelectName, &viewState, &error);
         if (day) {
-            [self performSelectorOnMainThread:@selector(successfullyDownloadedDay:) withObject:dayString waitUntilDone:NO];            
+            [self performSelectorOnMainThread:@selector(successfullyDownloadedReport:) withObject:dayString waitUntilDone:NO];            
         } else if (error) {
             NSString *message = [@"could not download " stringByAppendingString:dayString];
             [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:message waitUntilDone:NO];
@@ -421,7 +415,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         BOOL error = false;
         Day *week = downloadReport(originalReportsPath, ajaxName, arbitraryDay, weekString, weekSelectName, &viewState, &error);
         if (week) {
-            [self performSelectorOnMainThread:@selector(successfullyDownloadedWeek:) withObject:week waitUntilDone:NO];   
+            [self performSelectorOnMainThread:@selector(successfullyDownloadedReport:) withObject:week waitUntilDone:NO];   
         } else if (error) {
             NSString *message = [@"could not download " stringByAppendingString:weekString];
             [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:message waitUntilDone:NO];
@@ -460,7 +454,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
     exit(1);
 }
 
-- (void)successfullyDownloadedDay:(NSString *)day
+- (void)successfullyDownloadedReport:(NSString *)day
 {
     fprintf(stdout, "Downloaded day: %s\n", [day UTF8String]);
 }
