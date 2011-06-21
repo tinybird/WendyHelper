@@ -208,6 +208,11 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
     NSHTTPURLResponse *downloadResponse = nil;
     NSData *requestResponseData = getPostRequestAsData(ITTS_SALES_PAGE_URL, postDict, &downloadResponse);
     NSString *originalFilename = [[downloadResponse allHeaderFields] objectForKey:@"Filename"];
+    NSLog(@"Filename: %@", originalFilename);
+    if (!originalFilename) {
+        originalFilename = [[downloadResponse allHeaderFields] objectForKey:@"filename"];
+    }
+
     if (originalFilename) {
         [requestResponseData writeToFile:[originalReportsPath stringByAppendingPathComponent:originalFilename] atomically:YES];
         return YES;
@@ -374,6 +379,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
     viewState = parseViewState(responseString);
     
     // download daily reports
+    int numberOfReportsDownloaded = 0;
     int count = 1;
     for (NSString *dayString in availableDays) {
         NSString *progressMessage = [NSString stringWithFormat:NSLocalizedString(@"Downloading day %d of %d",nil), count, availableDays.count];
@@ -383,6 +389,7 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
         BOOL day = downloadReport(originalReportsPath, ajaxName, dayString, arbitraryWeek, daySelectName, &viewState, &error);
         if (day) {
             [self performSelectorOnMainThread:@selector(successfullyDownloadedReport:) withObject:dayString waitUntilDone:NO];            
+            numberOfReportsDownloaded++;
         } else if (error) {
             NSString *message = [@"could not download " stringByAppendingString:dayString];
             [self performSelectorOnMainThread:@selector(downloadFailed:) withObject:message waitUntilDone:NO];
@@ -425,12 +432,12 @@ static BOOL downloadReport(NSString *originalReportsPath, NSString *ajaxName, NS
     }
 #endif
     
-	if (availableDays.count == 0/* && availableWeeks.count == 0*/) {
+	//if (availableDays.count == 0 && availableWeeks.count == 0) {
+    if (numberOfReportsDownloaded == 0) {
 		[self performSelectorOnMainThread:@selector(setProgress:) withObject:NSLocalizedString(@"No new reports found",nil) waitUntilDone:NO];
 	} else {
 		[self performSelectorOnMainThread:@selector(setProgress:) withObject:@"" waitUntilDone:NO];
 		//[self performSelectorOnMainThread:@selector(saveData) withObject:nil waitUntilDone:NO];
-
 	} 
     
 	[self performSelectorOnMainThread:@selector(finishFetchingReports) withObject:nil waitUntilDone:NO];
