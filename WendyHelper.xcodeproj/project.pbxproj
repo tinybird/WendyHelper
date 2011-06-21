@@ -63,7 +63,7 @@
 				08FB7795FE84155DC02AAC07 /* AppSales Code */,
 				15412F4912475D3C00DEA353 /* Classes */,
 				15412F4812475D2600DEA353 /* Other Source */,
-				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
+				08FB779DFE84155DC02AAC07 /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 			);
 			name = WendyHelper;
@@ -82,14 +82,14 @@
 			name = "AppSales Code";
 			sourceTree = "<group>";
 		};
-		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
+		08FB779DFE84155DC02AAC07 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 				15412F2F12475CD500DEA353 /* libicucore.dylib */,
 				154130B1124A2FCC00DEA353 /* libsqlite3.dylib */,
 			);
-			name = "External Frameworks and Libraries";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		15412F4812475D2600DEA353 /* Other Source */ = {
