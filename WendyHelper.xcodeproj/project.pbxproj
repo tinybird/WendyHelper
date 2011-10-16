@@ -60,8 +60,7 @@
 		08FB7794FE84155DC02AAC07 /* WendyHelper */ = {
 			isa = PBXGroup;
 			children = (
-				08FB7795FE84155DC02AAC07 /* AppSales Code */,
-				15412F4912475D3C00DEA353 /* Classes */,
+				08FB7795FE84155DC02AAC07 /* Classes */,
 				15412F4812475D2600DEA353 /* Other Source */,
 				08FB779DFE84155DC02AAC07 /* Frameworks */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
@@ -69,14 +68,17 @@
 			name = WendyHelper;
 			sourceTree = "<group>";
 		};
-		08FB7795FE84155DC02AAC07 /* AppSales Code */ = {
+		08FB7795FE84155DC02AAC07 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				156C8EB7144ABFD900F802A3 /* New Group */,
+				156C8EB8144ABFE100F802A3 /* ASAccount.h */,
+				156C8EB9144ABFE100F802A3 /* ASAccount.m */,
+				156C8EC0144AC02800F802A3 /* ReportDownloadOperation.h */,
+				156C8EC1144AC02800F802A3 /* ReportDownloadOperation.m */,
 				156C8ED9144AC9C500F802A3 /* Utilities.h */,
 				156C8EDA144AC9C500F802A3 /* Utilities.m */,
 			);
-			name = "AppSales Code";
+			name = Classes;
 			sourceTree = "<group>";
 		};
 		08FB779DFE84155DC02AAC07 /* Frameworks */ = {
@@ -96,24 +98,6 @@
 				08FB7796FE84155DC02AAC07 /* WendyHelper.m */,
 			);
 			name = "Other Source";
-			sourceTree = "<group>";
-		};
-		15412F4912475D3C00DEA353 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Classes;
-			sourceTree = "<group>";
-		};
-		156C8EB7144ABFD900F802A3 /* New Group */ = {
-			isa = PBXGroup;
-			children = (
-				156C8EB8144ABFE100F802A3 /* ASAccount.h */,
-				156C8EB9144ABFE100F802A3 /* ASAccount.m */,
-				156C8EC0144AC02800F802A3 /* ReportDownloadOperation.h */,
-				156C8EC1144AC02800F802A3 /* ReportDownloadOperation.m */,
-			);
-			name = "New Group";
 			sourceTree = "<group>";
 		};
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {

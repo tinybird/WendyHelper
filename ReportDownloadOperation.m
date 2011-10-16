@@ -160,7 +160,12 @@
 			if (i == 0) {
 				if ([dateType isEqualToString:@"Daily"]) {
 					dispatch_async(dispatch_get_main_queue(), ^ {
+#ifdef ORIGINAL_CODE
 						_account.downloadStatus = NSLocalizedString(@"Checking for daily reports...", nil);
+#else
+                        NSString *tmp = [availableReportDateStrings componentsJoinedByString:@", "];
+                        _account.downloadStatus = [NSString stringWithFormat:@"Getting reports for %@", tmp];
+#endif
 						_account.downloadProgress = 0.1;
 					});
 				} else {
@@ -169,11 +174,20 @@
 						_account.downloadProgress = 0.5;
 					});
 				}
-			} else {
+			}
+#ifdef ORIGINAL_CODE
+        } else {
+#else
+            if (1) { // RH, we always want this.
+#endif
 				if ([dateType isEqualToString:@"Daily"]) {
 					float progress = 0.5 * ((float)i / (float)numberOfReportsAvailable);
 					dispatch_async(dispatch_get_main_queue(), ^ {
-						_account.downloadStatus = [NSString stringWithFormat:NSLocalizedString(@"Loading daily report %i / %i", nil), i+1, numberOfReportsAvailable];
+#ifdef ORIGINAL_CODE
+                        _account.downloadStatus = [NSString stringWithFormat:NSLocalizedString(@"Loading daily report %i / %i", nil), i+1, numberOfReportsAvailable];
+#else
+						_account.downloadStatus = [NSString stringWithFormat:NSLocalizedString(@"Loading daily report %i / %i (%@)", nil), i+1, numberOfReportsAvailable, reportDateString];
+#endif
 						_account.downloadProgress = progress;
 					});
 				} else {

@@ -90,7 +90,7 @@ int main(int argc, const char *argv[])
 
     [reportDownloadQueue release];
 
-    NSLog(@"Done...");
+    printf("Done.\n");
 
     [pool drain];
 
