@@ -3,15 +3,15 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		15412E751247557400DEA353 /* ReportManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E741247557400DEA353 /* ReportManager.m */; };
-		15412E87124755F700DEA353 /* RegexKitLite.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E82124755F700DEA353 /* RegexKitLite.m */; };
-		15412E921247563400DEA353 /* NSDictionary+HTTP.m in Sources */ = {isa = PBXBuildFile; fileRef = 15412E911247563400DEA353 /* NSDictionary+HTTP.m */; };
 		15412F3012475CD500DEA353 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 15412F2F12475CD500DEA353 /* libicucore.dylib */; };
 		154130B2124A2FCC00DEA353 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 154130B1124A2FCC00DEA353 /* libsqlite3.dylib */; };
+		156C8EBA144ABFE100F802A3 /* ASAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 156C8EB9144ABFE100F802A3 /* ASAccount.m */; };
+		156C8EC3144AC02800F802A3 /* ReportDownloadOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 156C8EC1144AC02800F802A3 /* ReportDownloadOperation.m */; };
+		156C8EDB144AC9C500F802A3 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 156C8EDA144AC9C500F802A3 /* Utilities.m */; };
 		8DD76F9A0486AA7600D96B5E /* WendyHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 08FB7796FE84155DC02AAC07 /* WendyHelper.m */; settings = {ATTRIBUTES = (); }; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
@@ -31,14 +31,14 @@
 /* Begin PBXFileReference section */
 		08FB7796FE84155DC02AAC07 /* WendyHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WendyHelper.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		15412E731247557400DEA353 /* ReportManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportManager.h; sourceTree = "<group>"; };
-		15412E741247557400DEA353 /* ReportManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportManager.m; sourceTree = "<group>"; };
-		15412E81124755F700DEA353 /* RegexKitLite.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegexKitLite.h; sourceTree = "<group>"; };
-		15412E82124755F700DEA353 /* RegexKitLite.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegexKitLite.m; sourceTree = "<group>"; };
-		15412E901247563400DEA353 /* NSDictionary+HTTP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+HTTP.h"; sourceTree = "<group>"; };
-		15412E911247563400DEA353 /* NSDictionary+HTTP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+HTTP.m"; sourceTree = "<group>"; };
 		15412F2F12475CD500DEA353 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		154130B1124A2FCC00DEA353 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		156C8EB8144ABFE100F802A3 /* ASAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASAccount.h; sourceTree = "<group>"; };
+		156C8EB9144ABFE100F802A3 /* ASAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASAccount.m; sourceTree = "<group>"; };
+		156C8EC0144AC02800F802A3 /* ReportDownloadOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReportDownloadOperation.h; sourceTree = "<group>"; };
+		156C8EC1144AC02800F802A3 /* ReportDownloadOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReportDownloadOperation.m; sourceTree = "<group>"; };
+		156C8ED9144AC9C500F802A3 /* Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
+		156C8EDA144AC9C500F802A3 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
 		32A70AAB03705E1F00C91783 /* WendyHelper_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WendyHelper_Prefix.pch; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* WendyHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = WendyHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -72,12 +72,9 @@
 		08FB7795FE84155DC02AAC07 /* AppSales Code */ = {
 			isa = PBXGroup;
 			children = (
-				15412E901247563400DEA353 /* NSDictionary+HTTP.h */,
-				15412E911247563400DEA353 /* NSDictionary+HTTP.m */,
-				15412E81124755F700DEA353 /* RegexKitLite.h */,
-				15412E82124755F700DEA353 /* RegexKitLite.m */,
-				15412E731247557400DEA353 /* ReportManager.h */,
-				15412E741247557400DEA353 /* ReportManager.m */,
+				156C8EB7144ABFD900F802A3 /* New Group */,
+				156C8ED9144AC9C500F802A3 /* Utilities.h */,
+				156C8EDA144AC9C500F802A3 /* Utilities.m */,
 			);
 			name = "AppSales Code";
 			sourceTree = "<group>";
@@ -106,6 +103,17 @@
 			children = (
 			);
 			name = Classes;
+			sourceTree = "<group>";
+		};
+		156C8EB7144ABFD900F802A3 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				156C8EB8144ABFE100F802A3 /* ASAccount.h */,
+				156C8EB9144ABFE100F802A3 /* ASAccount.m */,
+				156C8EC0144AC02800F802A3 /* ReportDownloadOperation.h */,
+				156C8EC1144AC02800F802A3 /* ReportDownloadOperation.m */,
+			);
+			name = "New Group";
 			sourceTree = "<group>";
 		};
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
@@ -142,8 +150,11 @@
 /* Begin PBXProject section */
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
 			buildConfigurationList = 1DEB927808733DD40010E9CD /* Build configuration list for PBXProject "WendyHelper" */;
-			compatibilityVersion = "Xcode 3.1";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -167,9 +178,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9A0486AA7600D96B5E /* WendyHelper.m in Sources */,
-				15412E751247557400DEA353 /* ReportManager.m in Sources */,
-				15412E87124755F700DEA353 /* RegexKitLite.m in Sources */,
-				15412E921247563400DEA353 /* NSDictionary+HTTP.m in Sources */,
+				156C8EBA144ABFE100F802A3 /* ASAccount.m in Sources */,
+				156C8EC3144AC02800F802A3 /* ReportDownloadOperation.m in Sources */,
+				156C8EDB144AC9C500F802A3 /* Utilities.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,7 +193,6 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -215,8 +225,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -228,8 +237,7 @@
 				GCC_VERSION = "";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				PREBINDING = NO;
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
