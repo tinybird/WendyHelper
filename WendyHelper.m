@@ -1,62 +1,97 @@
 #import <Foundation/Foundation.h>
-#import "ReportManager.h"
+#import "ASAccount.h"
+#import "ReportDownloadOperation.h"
 
 
 int main(int argc, const char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
+    ASAccount *account = [ASAccount sharedAccount];
+
     BOOL getPath = NO;
     BOOL getUsername = NO;
     BOOL getPassword = NO;
-    NSString *path = nil;
-    NSString *username = nil;
-    NSString *password = nil;
+    BOOL getVendorID = NO;
     for (int i = 1; i < argc; i++) {
         NSString *string = [NSString stringWithUTF8String:argv[i]];
         if (getPath) {
-            path = string;
+            account.path = string;
             getPath = NO;
         }
         else if (getUsername) {
-            username = string;
+            account.username = string;
             getUsername = NO;
         }
         else if (getPassword) {
-            password = string;
+            account.password = string;
             getPassword = NO;
         }
-        else if (strcmp(argv[i], "-d") == 0) {
-            getPath = YES;
-            getUsername = NO;
-            getPassword = NO;
-        }
-        else if (strcmp(argv[i], "-u") == 0) {
-            getPath = NO;
-            getUsername = YES;
-            getPassword = NO;
-        }
-        else if (strcmp(argv[i], "-p") == 0) {
+        else if (getVendorID) {
+            account.vendorID = string;
+            getVendorID = NO;
+        } else {
             getPath = NO;
             getUsername = NO;
-            getPassword = YES;
+            getPassword = NO;
+            getVendorID = NO;
+
+            if (strcmp(argv[i], "-d") == 0) {
+                getPath = YES;
+            }
+            else if (strcmp(argv[i], "-u") == 0) {
+                getUsername = YES;
+            }
+            else if (strcmp(argv[i], "-p") == 0) {
+                getPassword = YES;
+            }
+            else if (strcmp(argv[i], "-i") == 0) {
+                getVendorID = YES;
+            }
         }
     }
 
-    if (path == nil || username == nil || password == nil) {
-        fprintf(stderr, "Usage: %s -d <path to sales database> -u <username> -p <password>\n", argv[0]);
+    if (account.path == nil || account.username == nil || account.password == nil || account.vendorID == nil) {
+        fprintf(stderr, "Usage: %s -d <path to sales database> -u <username> -p <password> -i <vendorID>\n", argv[0]);
         return 1;
     }
-    
-    ReportManager *reportManager = [[ReportManager alloc] init];
-    reportManager.basePath = path;
 
-    [reportManager downloadReportsWithUsername:username password:password];
+    NSString *path = [account.path stringByAppendingPathComponent:@"OriginalReports"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:path]) {
+        NSError *error;
+        if (![[NSFileManager defaultManager] createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error]) {
+            fprintf(stderr, "Couldn't create reports directory\n");
+            return 1;
+        }
+    }
 
-    [[NSRunLoop mainRunLoop] run];
+    NSOperationQueue *reportDownloadQueue = [[NSOperationQueue alloc] init];
+    reportDownloadQueue.maxConcurrentOperationCount = 1;
 
-    [reportManager release];
-    
+    ReportDownloadOperation *operation = [[[ReportDownloadOperation alloc] initWithAccount:account] autorelease];
+    account.isDownloadingReports = YES;
+    account.downloadStatus = NSLocalizedString(@"Waiting...", nil);
+    account.downloadProgress = 0.0;
+
+    __block BOOL shouldKeepRunning = YES;
+
+    [operation setCompletionBlock:^ {
+        dispatch_async(dispatch_get_main_queue(), ^ {
+            account.isDownloadingReports = NO;
+            shouldKeepRunning = NO;
+        });
+    }];
+    [reportDownloadQueue addOperation:operation];
+
+    NSRunLoop *loop = [NSRunLoop currentRunLoop];
+    while (shouldKeepRunning && [loop runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]]) {
+        // ...
+    }
+
+    [reportDownloadQueue release];
+
+    NSLog(@"Done...");
+
     [pool drain];
 
     return 0;
