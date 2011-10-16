@@ -8,13 +8,18 @@
 
 #import "ReportDownloadOperation.h"
 #import "ASAccount.h"
+#ifdef ORIGINAL_CODE
 #import "Report.h"
 #import "WeeklyReport.h"
 #import "RegexKitLite.h"
 #import "NSData+Compression.h"
 #import "NSDictionary+HTTP.h"
 #import "JSONKit.h"
+#else
+#import "Utilities.h"
+#endif
 
+#ifdef ORIGINAL_CODE
 @interface ReportDownloadOperation ()
 
 - (NSData *)dataFromSynchronousPostRequestWithURL:(NSURL *)URL bodyDictionary:(NSDictionary *)bodyDictionary response:(NSHTTPURLResponse **)response;
@@ -22,11 +27,14 @@
 - (void)parsePaymentsPage:(NSString *)paymentsPage inAccount:(ASAccount *)account vendorID:(NSString *)vendorID;
 
 @end
-
+#endif
 
 @implementation ReportDownloadOperation
 
+@synthesize downloadCount;
+#ifdef ORIGINAL_CODE
 @synthesize downloadCount, accountObjectID;
+#endif
 
 - (id)initWithAccount:(ASAccount *)account
 {
@@ -35,8 +43,10 @@
 		username = [[account username] copy];
 		password = [[account password] copy];
 		_account = [account retain];
-		accountObjectID = [[account objectID] copy];
-		psc = [[[account managedObjectContext] persistentStoreCoordinator] retain];
+#ifdef ORIGINAL_CODE
+        accountObjectID = [[account objectID] copy];
+        psc = [[[account managedObjectContext] persistentStoreCoordinator] retain];
+#endif
     }
     return self;
 }
@@ -51,15 +61,23 @@
 		_account.downloadProgress = 0.0;
 	});
 	
+#ifdef ORIGINAL_CODE
 	NSManagedObjectContext *moc = [[[NSManagedObjectContext alloc] init] autorelease];
 	[moc setPersistentStoreCoordinator:psc];
 	[moc setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
-	
+
 	ASAccount *account = (ASAccount *)[moc objectWithID:accountObjectID];
+
 	NSInteger previousBadge = [account.reportsBadge integerValue];
+#else
+	ASAccount *account = _account;
+#endif
 	NSString *vendorID = account.vendorID;
 	
+#ifdef ORIGINAL_CODE
 	for (NSString *dateType in [NSArray arrayWithObjects:@"Daily", @"Weekly", nil]) {
+#endif
+	for (NSString *dateType in [NSArray arrayWithObjects:@"Daily", nil]) {
 		//Determine which reports should be available for download:
 		NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
 		[dateFormatter setDateFormat:@"yyyyMMdd"];
@@ -100,6 +118,7 @@
 			[availableReportDates addObject:normalizedDate];
 		}
 		
+#ifdef ORIGINAL_CODE
 		//Filter out reports we already have:
 		NSFetchRequest *existingReportsFetchRequest = [[[NSFetchRequest alloc] init] autorelease];
 		if ([dateType isEqualToString:@"Daily"]) {
@@ -122,7 +141,15 @@
 				[availableReportDateStrings removeObject:endDateString];
 			}
 		}
-		
+#else
+        //NSLog(@"Available strings: %@ (%ld)", availableReportDateStrings, [availableReportDateStrings count]);
+        NSArray *existingReports = [Utilities availableDays];
+		for (NSString *startDateString in existingReports) {
+            [availableReportDateStrings removeObject:startDateString];
+		}
+        //NSLog(@"After cleaning: %@ (%ld)", availableReportDateStrings, [availableReportDateStrings count]);
+#endif
+
 		int i = 0;
 		int numberOfReportsAvailable = [availableReportDateStrings count];
 		for (NSString *reportDateString in availableReportDateStrings) {
@@ -178,6 +205,7 @@
 				NSLog(@"  %@", errorMessage);
 			} else if (reportData) {
 				NSString *originalFilename = [[response allHeaderFields] objectForKey:@"Filename"];
+#ifdef ORIGINAL_CODE
 				NSData *inflatedReportData = [reportData gzipInflate];
 				NSString *reportCSV = [[[NSString alloc] initWithData:inflatedReportData encoding:NSUTF8StringEncoding] autorelease];
 				if (originalFilename && [reportCSV length] > 0) {
@@ -203,6 +231,11 @@
 					}
 					[psc unlock];
 				}
+#else
+                NSString *originalReportsPath = [Utilities originalReportsPath];
+                [reportData writeToFile:[originalReportsPath stringByAppendingPathComponent:originalFilename] atomically:YES];
+                numberOfReportsDownloaded++;
+#endif
 			}
 			i++;
 		}
@@ -212,6 +245,7 @@
 		return;
 	}
 	
+#ifdef ORIGINAL_CODE
 	if (numberOfReportsDownloaded > 0 || [account.payments count] == 0) {
 		//==== Payments
 		NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -375,6 +409,7 @@
 		[psc unlock];
 	}
 	
+#endif
 	if (numberOfReportsDownloaded > 0) {
 		dispatch_async(dispatch_get_main_queue(), ^ {
 			_account.downloadStatus = NSLocalizedString(@"Finished", nil);
@@ -390,6 +425,7 @@
 	[pool release];
 }
 
+#ifdef ORIGINAL_CODE
 - (void)parsePaymentsPage:(NSString *)paymentsPage inAccount:(ASAccount *)account vendorID:(NSString *)vendorID
 {
 	NSManagedObjectContext *moc = [account managedObjectContext];
@@ -477,14 +513,17 @@
 	}
 	return nil;
 }
+#endif
 
 - (void)dealloc
 {
 	[username release];
 	[password release];
+#ifdef ORIGINAL_CODE
 	[accountObjectID release];
 	[_account release];
 	[psc release];
+#endif
 	[super dealloc];
 }
 

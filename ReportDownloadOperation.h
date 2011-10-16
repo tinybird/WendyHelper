@@ -18,13 +18,13 @@
 	ASAccount *_account;
 	NSString *username;
 	NSString *password;
-	NSPersistentStoreCoordinator *psc;
-	NSManagedObjectID *accountObjectID;
+	// rh NSPersistentStoreCoordinator *psc;
+	// rh NSManagedObjectID *accountObjectID;
 	NSInteger downloadCount;
 }
 
 @property (readonly) NSInteger downloadCount;
-@property (copy) NSManagedObjectID *accountObjectID;
+// rh @property (copy) NSManagedObjectID *accountObjectID;
 
 - (id)initWithAccount:(ASAccount *)account;
 
